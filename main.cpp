@@ -492,7 +492,7 @@ int main() {
     int tok=0;//variavel de controlo de retorno do tokenizer
     InitTables();
     atexit(printAll);
-    token.LoadThisFile("test.run");
+    token.LoadThisFile("example.run");
     printf("RUN v0.2\n\n");
     time(&start);
     while(tok!=-1)
