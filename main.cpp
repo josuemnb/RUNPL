@@ -368,6 +368,19 @@ void evalSpin() {
 
     blk=ind;
     ind++;
+    if(token.GetTheNextNumber()){
+        LOOPt[blk].init=0;
+        LOOPt[blk].final=atoi(token.ReturnTheToken());
+        for(LOOPt[blk].count=LOOPt[blk].init;LOOPt[blk].count<=LOOPt[blk].final;LOOPt[blk].count++){
+                tok=1;
+        while(tok==1)
+            tok=evalBlock();
+        if(tok==2)
+            break;
+        }
+        if(ind>0)ind--;
+        return;
+    }
     if(!token.GetTheNextName())
         showErr(ERROS.EXPECTED_NAME,token.ReturnActualLine(),token.ReturnTheToken());
     vV=CheckVars(token.ReturnTheToken());
