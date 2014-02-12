@@ -45,6 +45,7 @@ int showErr(int msg, int line, const char token[50]){
 		case 31:strcpy(s,"Esperado um valor numerico ou frase");break;
 		case 32:strcpy(s,"Nome da variavel ou nome de comparacao já está a ser usado");break;
 		case 33:strcpy(s,"Esperado um endif");break;
+		case 34:strcpy(s,"Valor impossivel de ser resolvido");break;
 		default:strcpy(s,"Erro desconhecido");break;
 	}
 	erro++;
