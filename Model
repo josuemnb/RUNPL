@@ -31,7 +31,7 @@ next                            ; keyword de controlo para novo spin
 if c==10 do debug c             ; se o codigo de execução da condição estiver na mesma linha, 
                                 ; significa que só executa uma linha. não espera encontra um else ou endif
 
-if c==10 do                     ;codigo com execução noutra linha indicado a necessidade de existir um else ou endif
+if c==10 do                     ; codigo com execução noutra linha indicado a necessidade de existir um else ou endif
   debug c
 endif
 if c==10 do
@@ -41,11 +41,13 @@ else
 endif
 if c==10 do
   debug c
-else debug b                  ; visto que o else tem o codigo de execução na mesma linha, só executa isso e 
-                              ; não procura pelo endif
+else debug b                    ; visto que o else tem o codigo de execução na mesma linha, só executa isso e 
+                                ; não procura pelo endif
 
-log a                         ; criador de logs em ficheiro filename do codigo + .log
+log a                           ; criador de logs em ficheiro filename do codigo + .log
 
 function foo 
-  
+ << 'ola'                       ; o '<<' funciona como return
 end 
+
+foo() >> c                      ; atribui o retorno de foo a c
