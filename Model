@@ -8,6 +8,8 @@ var e << foo()                  ; atribui o valor residual da função, não a e
 
 const b << 11
 
+debug c                         ; imprime na tela a mensagem tipo log 'DEBUG: ' + o valor de c
+
 read c                          ; é uma especie de gets(c)
 
 
