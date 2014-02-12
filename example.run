@@ -1,6 +1,5 @@
 var b << 'ola mundo, eu estou aqui'
 var a
-spin a from 1 to 100000
-  '' + a;
-  debug b
+spin a from 1 to 1000000
+  '' + b;
 next
