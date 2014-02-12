@@ -44,6 +44,7 @@
     static const int EXPECTED_NAME_NUMBER=31;
     static const int BLOCK_NAME_USED=32;
     static const int EXPECTED_ENDIF=33;
+    static const int UNRESOLVED_VALUE=34;
 };
 
 
