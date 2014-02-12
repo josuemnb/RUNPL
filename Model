@@ -1,8 +1,8 @@
 ; this is a comment
-; não é necessário ; para cortar as linhas
+; não é necessário ';' para cortar as linhas
 
 var c
-var c << 11 ; atribuição estática de valores
+var c << 11 ; '<<' atribuição estática de valores
 var c << 'ola'
 var b << c
 var e << foo(); atribui o valor residual da função, não a executa
@@ -12,19 +12,25 @@ const b << 11
 read c; é uma especie de gets(c)
 
 
-'qual o valor para c: ' >> c; read com print na consola, as aspas no inicio são a indicação de que sai directamente para a consola
-'este é o novo valor de c: ' + c; colocando as aspas no final garante que o cursor mude de linha além de ser também um comentário
+'qual o valor para c: ' >> c    ; read com print na consola, '>>' atribuição dinamica de valores
+                                ; as aspas no inicio são a indicação de que sai directamente para a consola
+'este é o novo valor de c:' + c ; colocando as aspas no final garante que o cursor mude de linha 
+                                ; além de ser também um comentário
 '' + c;
-'' + c + 'fim';
+'' + c + 'fim';                 ; concatena as strings e o valore da função imprimindo isso na consola
 
-spin
-spin c
-spin c from 0 to 10
-spin c to 10
-spin 10
+spin                            ; o equivalente ao ciclo for, neste caso ciclo eterno
+spin c                          ; spin até chegar ao valor atual de c, não altera o valor de c
+spin c from 0 to 10             ; spin c desde 0 até 10 alterando o seu valor
+spin c to 10                    ; spin c até 10 alterando o seu valor
+spin 10                         ; spin 10 vezes
+  ...
+next                            ; keyword de controlo para novo spin
 
-if c==10 do debug c
-if c==10 do
+if c==10 do debug c             ; se o codigo de execução da condição estiver na mesma linha, 
+                                ; significa que só executa uma linha. não espera encontra um else ou endif
+
+if c==10 do                     ;codigo com execução noutra linha indicado a necessidade de existir um else ou endif
   debug c
 endif
 if c==10 do
@@ -34,9 +40,10 @@ else
 endif
 if c==10 do
   debug c
-else debug b
+else debug b                  ; visto que o else tem o codigo de execução na mesma linha, só executa isso e 
+                              ; não procura pelo endif
 
-log a
+log a                         ; criador de logs em ficheiro filename do codigo + .log
 
 function foo 
   
