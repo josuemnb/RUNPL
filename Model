@@ -1,0 +1,43 @@
+; this is a comment
+; não é necessário ; para cortar as linhas
+
+var c
+var c << 11 ; atribuição estática de valores
+var c << 'ola'
+var b << c
+var e << foo(); atribui o valor residual da função, não a executa
+
+const b << 11
+
+read c; é uma especie de gets(c)
+
+
+'qual o valor para c: ' >> c; read com print na consola, as aspas no inicio são a indicação de que sai directamente para a consola
+'este é o novo valor de c: ' + c; colocando as aspas no final garante que o cursor mude de linha além de ser também um comentário
+'' + c;
+'' + c + 'fim';
+
+spin
+spin c
+spin c from 0 to 10
+spin c to 10
+spin 10
+
+if c==10 do debug c
+if c==10 do
+  debug c
+endif
+if c==10 do
+  debug c
+else 
+  debug b
+endif
+if c==10 do
+  debug c
+else debug b
+
+log a
+
+function foo 
+  
+end 
