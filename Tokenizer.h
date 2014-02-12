@@ -63,18 +63,18 @@ class Tokenizer
 private:
 
 char        Token[50];//token obtido
-int         StateOfFileStream;
-int         LenghtOfToken;//tamanho do token
-long int    SizeOfFile;//tamanho do ficheiro
+int         StateOfFileStream=0;
+int         LenghtOfToken=0;//tamanho do token
+long int    SizeOfFile=0;//tamanho do ficheiro
 char  *     FileStream;//string com o ficheiro
-int         FileLoaded;//confirma que o ficheiro foi carregado
+int         FileLoaded=0;//confirma que o ficheiro foi carregado
 char        FileName[100];//nome do ficheiro
-int         TotalOfTokens;//total de token obtidos
-long        Pointer;//posicao na linha
-int         LineCounter;//contador de linhas
+int         TotalOfTokens=0;//total de token obtidos
+long        Pointer=0;//posicao na linha
+int         LineCounter=0;//contador de linhas
 char        StringInTheLine[255];//string entre aspas
-int         NumberOfTokensInTheLine;//quantidades
-int         StartedNewLine;
+int         NumberOfTokensInTheLine=0;//quantidades
+int         StartedNewLine=0;
 
 public:
 
