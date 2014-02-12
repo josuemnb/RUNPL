@@ -12,6 +12,9 @@
 #define nil "\0"
 #endif
 
+FILE *fp;
+bool LogOpened=false;
+
 enum types { NONE=0, VAR, READ, CONST, IF, ELSE, ENDIF, PUTS, NEXT, BREAK, CONTINUE, SPIN, EXIT, FROM, TO, BY, AGAIN};
 enum group { VOID, DECLARE, LOOPS, CONTROL, FUNCTIONS, BREAKERS };
 
@@ -98,10 +101,40 @@ void evalVar() {
             if(!token.GetStringInTheLine())
                 showErr(ERROS.MISSING_QUOTE,token.ReturnActualLine(),token.ReturnTheToken());
             AddVar(name,1,token.ReturnTheString());
+            return;
         }
+        if(!token.GetTheNextNumber())
+            showErr(ERROS.EXPECTED_NUMBER,token.ReturnActualLine(),token.ReturnTheToken());
+        AddVar(name,2,token.ReturnTheToken());
         return;
     }
     else AddVar(name,0,nil);
+    return;
+}
+
+void evalLog(){
+    char log[110]="\0";
+
+    if(LogOpened==false){//ainda não foi criado
+        strcat(log,token.ReturnTheFileName());
+        strcat(log,".log");
+        if((fp=fopen(log,"w"))==NULL){
+            puts("ERRO: Não é permitido criar LogFile");
+            exit(-1);
+        }
+        LogOpened=true;
+    }
+    if(token.GetTheNextName()){
+        vV=CheckVars(token.ReturnTheToken());
+        if(vV==NULL)
+            showErr(ERROS.UNKNOW_VARIABLE,token.ReturnActualLine(),token.ReturnTheToken());
+        if(vV->value[0]=='\0')
+            fputs("LOG: NULL",fp);
+        else
+            fprintf(fp,"LOG: %s\n", vV->value);
+        return;
+    }
+    else showErr(ERROS.EXPECTED_NAME,token.ReturnActualLine(),token.ReturnTheToken());
     return;
 }
 
@@ -362,22 +395,39 @@ void evalPuts() {
     return;
 }
 
-void evalSpin() {
-
+void processSpin(int init, int final, VARt *v) {
     int tok=1;
-
-    blk=ind;
-    ind++;
-    if(token.GetTheNextNumber()){
-        LOOPt[blk].init=0;
-        LOOPt[blk].final=atoi(token.ReturnTheToken());
-        for(LOOPt[blk].count=LOOPt[blk].init;LOOPt[blk].count<=LOOPt[blk].final;LOOPt[blk].count++){
-                tok=1;
+    LOOPt[blk].init=init;
+    LOOPt[blk].final=final;
+    LOOPt[blk].pos=token.ReturnActualPosition();
+    token.IncreaseLineCounter();
+    if(v)
+        LOOPt[blk].varPtr=v->value;
+    for(LOOPt[blk].count=LOOPt[blk].init;LOOPt[blk].count<=LOOPt[blk].final;LOOPt[blk].count++) {
+        if(v){
+            sprintf(LOOPt[blk].varPtr,"%d",LOOPt[blk].count);
+            UpdateVar(v);
+        }
+        tok=1;
         while(tok==1)
             tok=evalBlock();
         if(tok==2)
             break;
-        }
+    }
+    return;
+}
+
+void evalSpin() {
+
+    int tok=1;
+    int init,final;
+
+    blk=ind;
+    ind++;
+    if(token.GetTheNextNumber()){
+        if(!token.IsTheEndOfTheLine())
+            showErr(ERROS.EXPECTED_END_OF_LINE,token.ReturnActualLine(),token.ReturnTheToken());
+        processSpin(1,atoi(token.ReturnTheToken()),NULL);
         if(ind>0)ind--;
         return;
     }
@@ -386,6 +436,14 @@ void evalSpin() {
     vV=CheckVars(token.ReturnTheToken());
     if(vV==NULL)
         showErr(ERROS.UNKNOW_VARIABLE,token.ReturnActualLine(),token.ReturnTheToken());
+    if(token.IsTheEndOfTheLine()){
+        final=atoi(vV->value);
+        if(final<1)
+            showErr(ERROS.UNRESOLVED_VALUE,token.ReturnActualLine(),token.ReturnTheToken());
+        processSpin(0,final,NULL);
+        if(ind>0)ind--;
+        return;
+    }
     if(!token.GetTheNextName())
         showErr(ERROS.EXPECTED_FROM,token.ReturnActualLine(),token.ReturnTheToken());
     if(strcmp(token.ReturnTheToken(),"from"))
@@ -395,29 +453,20 @@ void evalSpin() {
     if(vV->type==3)
         showErr(ERROS.CONSTANT_UNMODIFIABLE,token.ReturnActualLine(),token.ReturnTheToken());
     vV->type=2;
-    LOOPt[blk].varPtr=vV->value;
-    LOOPt[blk].init=atoi(token.ReturnTheToken());
+    init=atoi(token.ReturnTheToken());
     if(!token.GetTheNextName())
         showErr(ERROS.EXPECTED_TO,token.ReturnActualLine(),token.ReturnTheToken());
     if(strcmp(token.ReturnTheToken(),"to"))
         showErr(ERROS.EXPECTED_TO,token.ReturnActualLine(),token.ReturnTheToken());
     if(!token.GetTheNextNumber())
         showErr(ERROS.EXPECTED_NUMBER,token.ReturnActualLine(),token.ReturnTheToken());
-    LOOPt[blk].final=atoi(token.ReturnTheToken());
+
+    final=atoi(token.ReturnTheToken());
     if(!token.IsTheEndOfTheLine())
         showErr(ERROS.EXPECTED_END_OF_LINE,token.ReturnActualLine(),token.ReturnTheToken());
-    token.IncreaseLineCounter();
-    LOOPt[blk].pos=token.ReturnActualPosition();
-    for(LOOPt[blk].count=LOOPt[blk].init;LOOPt[blk].count<=LOOPt[blk].final;LOOPt[blk].count++) {
-        sprintf(LOOPt[blk].varPtr,"%d",LOOPt[blk].count);
-        UpdateVar(vV);
-        tok=1;
-        while(tok==1)
-            tok=evalBlock();
-        if(tok==2)
-            break;
-    }
+    processSpin(init,final,vV);
     if(ind>0)ind--;
+    return;
 }
 
 int evalBlock() {
@@ -443,6 +492,10 @@ int evalBlock() {
         }
         else if (!strcmp(token.ReturnTheToken(),"if")){
             evalIf();
+            return 1;
+        }
+        else if (!strcmp(token.ReturnTheToken(),"log")){
+            evalLog();
             return 1;
         }
         else if (!strcmp(token.ReturnTheToken(),"read")){
@@ -498,6 +551,8 @@ void printAll(){
     CloseTables();
     printf("Tamanho maximo de valor para uma variavel é de %d\n",ReturnMaxSize());
     printf("Total of vars: %d\n",ReturnTotalVars());
+    if(LogOpened)
+        fclose(fp);
 }
 
 int main() {
@@ -505,7 +560,7 @@ int main() {
     int tok=0;//variavel de controlo de retorno do tokenizer
     InitTables();
     atexit(printAll);
-    token.LoadThisFile("example.run");
+    token.LoadThisFile("test.run");
     printf("RUN v0.2\n\n");
     time(&start);
     while(tok!=-1)
