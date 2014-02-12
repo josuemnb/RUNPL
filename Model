@@ -1,15 +1,14 @@
-; this is a comment
-; não é necessário ';' para cortar as linhas
+; this is a comment             ; não é necessário ';' para cortar as linhas
 
 var c
-var c << 11 ; '<<' atribuição estática de valores
+var c << 11                     ; '<<' atribuição estática de valores
 var c << 'ola'
 var b << c
-var e << foo(); atribui o valor residual da função, não a executa
+var e << foo()                  ; atribui o valor residual da função, não a executa
 
 const b << 11
 
-read c; é uma especie de gets(c)
+read c                          ; é uma especie de gets(c)
 
 
 'qual o valor para c: ' >> c    ; read com print na consola, '>>' atribuição dinamica de valores
